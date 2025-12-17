@@ -67,7 +67,11 @@ export default function Header() {
               onClick={toggleTheme}
               className="rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+              {theme === "dark" ? (
+                <Sun size={20} className="text-white" />
+              ) : (
+                <Moon size={20} />
+              )}
             </button>
 
             <Link to="/login" className="text-sm dark:text-gray-300">
