@@ -118,7 +118,15 @@ export default function Header() {
               <>
                 {/* Plan badge */}
                 {subscription && (
-                  <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium
+      ${
+        subscription.plan === "free"
+          ? "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+          : "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400"
+      }
+    `}
+                  >
                     {subscription.plan_name}
                   </span>
                 )}

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../services/api";
+import { useSubscriptionStore } from "./subscriptionStore";
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -63,5 +64,7 @@ export const useAuthStore = create((set) => ({
 
     delete api.defaults.headers.common.Authorization;
     set({ user: null, isAuthenticated: false });
+
+    useSubscriptionStore.getState().clear();
   },
 }));

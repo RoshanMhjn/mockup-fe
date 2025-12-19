@@ -10,6 +10,7 @@ import PricingSection from "./components/pricing/PricingSection";
 import { useAuthStore } from "./store/authStore";
 import { useSubscriptionStore } from "./store/subscriptionStore";
 import Footer from "./components/layout/Footer";
+import CheckoutSuccess from "./pages/billing/CheckoutSuccess";
 
 export function AppWrapper({ children }) {
   const { theme } = useThemeStore();
@@ -51,6 +52,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/pricing" element={<PricingSection />} />
+          <Route path="/billing/success" element={<CheckoutSuccess />} />
         </Routes>
       </div>
       <Footer />

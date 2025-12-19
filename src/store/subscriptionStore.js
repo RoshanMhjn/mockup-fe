@@ -40,4 +40,14 @@ export const useSubscriptionStore = create((set) => ({
 
     await useSubscriptionStore.getState().fetchSubscription();
   },
+
+  startCheckout: async (planCode) => {
+    const res = await api.post("/api/subscriptions/checkout/", {
+      plan: planCode,
+    });
+
+    window.location.href = res.data.checkout_url;
+  },
+
+  clear: () => set({ subscription: null }),
 }));
