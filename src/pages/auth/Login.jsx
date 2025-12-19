@@ -1,11 +1,22 @@
-import { Form, Input, Button, Divider } from "antd";
-import { Link } from "react-router-dom";
+import { Form, Input, Button, Divider, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import { useAuthStore } from "../../store/authStore";
 
 export default function Login() {
-  const onFinish = (values) => {
-    console.log("Login values:", values);
+  const login = useAuthStore((s) => s.login);
+  const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    try {
+      await login(values.email, values.password);
+      message.success("Logged in Successfully");
+      navigate("/");
+    } catch (error) {
+      message.error("Invalid Credentials");
+      console.log(error);
+    }
   };
 
   return (

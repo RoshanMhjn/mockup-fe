@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { useThemeStore } from "../../store/themeStore";
 import { motion } from "framer-motion";
+import { useAuthStore } from "../../store/authStore";
+import { useSubscriptionStore } from "../../store/subscriptionStore";
 
 const tabs = [
   { label: "Home", path: "/" },
@@ -15,6 +17,8 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useThemeStore();
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuthStore();
+  const subscription = useSubscriptionStore((s) => s.subscription);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -98,15 +102,40 @@ export default function Header() {
               </motion.div>
             </button>
 
-            <Link to="/login" className="text-sm dark:text-gray-300">
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-            >
-              Sign up
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link to="/login" className="text-sm dark:text-gray-300">
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                >
+                  Sign up
+                </Link>
+              </>
+            ) : (
+              <>
+                {/* Plan badge */}
+                {subscription && (
+                  <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                    {subscription.plan_name}
+                  </span>
+                )}
+
+                {/* User */}
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  {user.email}
+                </span>
+
+                <button
+                  onClick={logout}
+                  className="text-sm text-gray-500 hover:text-red-600 dark:text-gray-400"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile toggle */}
@@ -158,9 +187,28 @@ export default function Header() {
                   )}
                 </motion.div>
               </button>
-              <div className="flex gap-3 dark:text-white">
-                <Link to="/login">Login</Link>
-                <Link to="/register">Sign up</Link>
+              <div className="flex gap-3 items-center dark:text-white">
+                {!isAuthenticated ? (
+                  <>
+                    <Link to="/login">Login</Link>
+                    <Link to="/register">Sign up</Link>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
+                      {user.email}
+                    </span>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setOpen(false);
+                      }}
+                      className="text-sm text-red-500"
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>

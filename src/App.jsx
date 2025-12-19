@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./components/layout/Header";
 import Hero from "./components/Hero";
 import { Route, Routes } from "react-router-dom";
@@ -7,6 +7,9 @@ import Register from "./pages/auth/Register";
 import { ConfigProvider, theme as antdTheme } from "antd";
 import { useThemeStore } from "./store/themeStore";
 import PricingSection from "./components/pricing/PricingSection";
+import { useAuthStore } from "./store/authStore";
+import { useSubscriptionStore } from "./store/subscriptionStore";
+import Footer from "./components/layout/Footer";
 
 export function AppWrapper({ children }) {
   const { theme } = useThemeStore();
@@ -30,15 +33,27 @@ export function AppWrapper({ children }) {
 }
 
 const App = () => {
+  const fetchUser = useAuthStore((s) => s.fetchUser);
+  const fetchSubscription = useSubscriptionStore((s) => s.fetchSubscription);
+
+  useEffect(() => {
+    fetchUser().then(() => {
+      fetchSubscription();
+    });
+  }, []);
+
   return (
     <div>
       <Header />
-      <Routes>
-        <Route path="/" element={<Hero />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/pricing" element={<PricingSection />} />
-      </Routes>
+      <div className="flex-1">
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/pricing" element={<PricingSection />} />
+        </Routes>
+      </div>
+      <Footer />
     </div>
   );
 };
