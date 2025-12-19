@@ -128,11 +128,10 @@ export default function Header() {
                   {user.email}
                 </span>
 
-                <button
-                  onClick={logout}
-                  className="text-sm text-gray-500 hover:text-red-600 dark:text-gray-400"
-                >
-                  Logout
+                <button onClick={logout}>
+                  <span className="text-sm text-gray-500 hover:text-gray-200 dark:text-white">
+                    Logout
+                  </span>
                 </button>
               </>
             )}

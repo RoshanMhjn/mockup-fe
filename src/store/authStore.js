@@ -1,11 +1,11 @@
 import { create } from "zustand";
-
 import api from "../services/api";
 
 export const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
   loading: false,
+  error: null,
 
   fetchUser: async () => {
     try {
@@ -33,21 +33,35 @@ export const useAuthStore = create((set) => ({
 
   login: async (email, password) => {
     set({ error: null });
-    await api.post("/api/auth/login/", {
+    const res = await api.post("/api/auth/login/", {
       email,
       password,
     });
+
+    const token = res.data.key;
+    localStorage.setItem("authToken", token);
+
+    api.defaults.headers.common.Authorization = `Token ${token}`;
+
     await useAuthStore.getState().fetchUser();
   },
 
   register: async (data) => {
     set({ error: null });
-    await api.post("/api/auth/register/", data);
+    const res = await api.post("/api/auth/register/", data);
+
+    if (res.data.key) {
+      localStorage.setItem("authToken", res.data.key);
+      api.defaults.headers.common.Authorization = `Token ${res.data.key}`;
+    }
     await useAuthStore.getState().fetchUser();
   },
 
   logout: async () => {
     await api.post("/api/auth/logout/");
+    localStorage.removeItem("authToken");
+
+    delete api.defaults.headers.common.Authorization;
     set({ user: null, isAuthenticated: false });
   },
 }));

@@ -1,11 +1,26 @@
-import { Form, Input, Button, Divider } from "antd";
-import { Link } from "react-router-dom";
+import { Form, Input, Button, Divider, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import { useAuthStore } from "../../store/authStore";
+useAuthStore;
 
 export default function Register() {
-  const onFinish = (values) => {
-    console.log("Register values:", values);
+  const registerUser = useAuthStore((s) => s.register);
+  const loading = useAuthStore((s) => s.loading);
+  const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    try {
+      await registerUser(values);
+      message.success("Account created successfully");
+      navigate("/login");
+    } catch (err) {
+      const errorMsg =
+        err?.response?.data?.detail ||
+        "Registration failed. Please check your inputs";
+      message.error(errorMsg);
+    }
   };
 
   return (
@@ -46,12 +61,35 @@ export default function Register() {
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
             label={
-              <span className="text-sm dark:text-gray-300">Full name</span>
+              <span className="text-sm dark:text-gray-300">First name</span>
             }
-            name="name"
-            rules={[{ required: true, message: "Name is required" }]}
+            name="first_name"
+            rules={[{ required: true, message: "First name is required" }]}
           >
-            <Input size="large" variant="filled" placeholder="John Doe" />
+            <Input size="large" variant="filled" />
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <span className="text-sm dark:text-gray-300">Last name</span>
+            }
+            name="last_name"
+            rules={[{ required: true, message: "Last name is required" }]}
+          >
+            <Input size="large" variant="filled" />
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <span className="text-sm dark:text-gray-300">Phone number</span>
+            }
+            name="phone_number"
+          >
+            <Input
+              size="large"
+              variant="filled"
+              placeholder="+977 98xxxxxxxx"
+            />
           </Form.Item>
 
           <Form.Item
@@ -68,7 +106,7 @@ export default function Register() {
 
           <Form.Item
             label={<span className="text-sm dark:text-gray-300">Password</span>}
-            name="password"
+            name="password1"
             rules={[
               { required: true, message: "Password is required" },
               { min: 6, message: "Minimum 6 characters" },
@@ -83,12 +121,12 @@ export default function Register() {
                 Confirm password
               </span>
             }
-            name="confirmPassword"
-            dependencies={["password"]}
+            name="password2"
+            dependencies={["password1"]}
             rules={[
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
+                  if (!value || getFieldValue("password1") === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject("Passwords do not match");
@@ -104,6 +142,7 @@ export default function Register() {
               type="primary"
               htmlType="submit"
               size="large"
+              loading={loading}
               className="w-full bg-indigo-600 hover:bg-indigo-700!"
             >
               Create account
