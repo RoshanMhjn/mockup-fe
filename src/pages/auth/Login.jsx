@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { useAuthStore } from "../../store/authStore";
+import GoogleAuthButton from "../../components/auth/GoogleAuthButton";
 
 export default function Login() {
   const login = useAuthStore((s) => s.login);
@@ -34,12 +35,7 @@ export default function Login() {
 
         {/* OAuth */}
         <div className="flex flex-col gap-3">
-          <button className="flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white py-2.5 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-            <FcGoogle size={18} />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-              Continue with Google
-            </span>
-          </button>
+          <GoogleAuthButton />
 
           <button className="flex w-full items-center justify-center gap-2 rounded-md bg-[#1877F2] py-2.5 text-sm font-medium text-white transition hover:opacity-90">
             <FaFacebook size={16} />

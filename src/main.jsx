@@ -6,12 +6,15 @@ import ReactDOM from "react-dom/client";
 import App, { AppWrapper } from "./App.jsx";
 import "antd/dist/reset.css";
 import { BrowserRouter } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AppWrapper>
-        <App />
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <App />
+        </GoogleOAuthProvider>
       </AppWrapper>
     </BrowserRouter>
   </StrictMode>
